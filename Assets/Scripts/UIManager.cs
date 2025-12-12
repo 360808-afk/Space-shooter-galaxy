@@ -23,11 +23,22 @@ public class UIManager : MonoBehaviour
     [SerializeField]
 	private TextMeshProUGUI _restartLevel;
 
+    [SerializeField]
+    private GameManager _gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       _scoreText.text = "Score: " + 0;
+        _scoreText.text = "Score: " + 0;
+
+        _gameOverText.gameObject.SetActive(false);
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+
+        if (_gameManager == null)
+        {
+            Debug.LogError("Game Manager is Null.");
+        }
+
     }
 
     public void UpdateScore(int playerScore)
@@ -39,9 +50,18 @@ public class UIManager : MonoBehaviour
     {
         _LivesImg.sprite = _liveSprites[currentLives];
         _gameOverText.gameObject.SetActive(false);
+
         if (currentLives == 0)
-        {            
-            _gameOverText.gameObject.SetActive(true);
+        {
+            GameOverSequence();
         }
     }
+
+    void GameOverSequence()
+    {
+        _gameOverText.gameObject.SetActive(true);
+        _restartLevel.gameObject.SetActive(true);
+        _gameManager.GameOver();
+    }
+
 }
